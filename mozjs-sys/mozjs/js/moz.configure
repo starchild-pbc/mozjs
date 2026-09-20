@@ -592,9 +592,9 @@ set_config("JS_MASM_VERBOSE", depends_if("--enable-masm-verbose")(lambda _: True
 # =======================================================
 
 
-@depends(target)
-def has_apple_fast_wx(target):
-    return target.kernel == "Darwin" and target.cpu == "aarch64"
+@depends(target, "--enable-jit")
+def has_apple_fast_wx(target, jit_enabled):
+    return jit_enabled and target.kernel == "Darwin" and target.cpu == "aarch64"
 
 
 # On Apple Silicon macOS we use MAP_JIT with pthread_jit_write_protect_np to

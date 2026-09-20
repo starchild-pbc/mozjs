@@ -20,6 +20,7 @@ const ENV_VARS: &'static [&'static str] = &[
     "CPPFLAGS",
     "CXX",
     "CXXFLAGS",
+    "IPHONEOS_DEPLOYMENT_TARGET",
     "MAKE",
     "MOZBUILD_STATE_PATH",
     "MOZTOOLS_PATH",

@@ -11,6 +11,11 @@ CONFIGURE_FLAGS := \
 	--disable-shared-js \
 	--build-backends=RecursiveMake
 
+ifneq (,$(IPHONEOS_DEPLOYMENT_TARGET))
+    CONFIGURE_FLAGS += --enable-ios-target=$(IPHONEOS_DEPLOYMENT_TARGET)
+    unexport IPHONEOS_DEPLOYMENT_TARGET
+endif
+
 ifeq (,$(CARGO_FEATURE_JIT))
     CONFIGURE_FLAGS += --disable-jit
 endif

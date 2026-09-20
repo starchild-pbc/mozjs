@@ -3,6 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 #![allow(unused_extern_crates)]
+#![cfg_attr(target_os = "ios", allow(unnecessary_transmutes))]
 #![cfg_attr(feature = "crown", feature(register_tool))]
 #![cfg_attr(feature = "crown", register_tool(crown))]
 #![cfg_attr(feature = "oom_with_hook", feature(alloc_error_hook))]
@@ -46,6 +47,7 @@ pub use crate::generated::root as jsapi;
 #[doc(hidden)]
 #[allow(dead_code)]
 mod generated {
+    #![cfg_attr(target_os = "ios", allow(unpredictable_function_pointer_comparisons))]
     #![allow(unnecessary_transmutes)]
     include!(concat!(env!("OUT_DIR"), "/build/jsapi.rs"));
 }
