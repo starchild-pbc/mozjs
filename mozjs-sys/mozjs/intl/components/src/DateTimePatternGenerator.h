@@ -5,6 +5,7 @@
 #define intl_components_DateTimePatternGenerator_h_
 
 #include "unicode/udatpg.h"
+#include "mozilla/mozalloc.h"
 #include "mozilla/EnumSet.h"
 #include "mozilla/Result.h"
 #include "mozilla/Span.h"
@@ -24,6 +25,11 @@ class DisplayNames;
  */
 class DateTimePatternGenerator final {
  public:
+  static void* operator new(size_t aSize) { return moz_xmalloc(aSize); }
+  static void operator delete(void* aPtr) noexcept {
+    InfallibleAllocPolicy().free_(aPtr);
+  }
+
   explicit DateTimePatternGenerator(UDateTimePatternGenerator* aGenerator)
       : mGenerator(aGenerator) {
     MOZ_ASSERT(aGenerator);

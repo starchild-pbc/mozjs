@@ -26,6 +26,7 @@
 #  include "unicode/unistr.h"
 #endif
 
+#include "mozilla/mozalloc.h"
 #include "mozilla/Assertions.h"
 #include "mozilla/Casting.h"
 #include "mozilla/intl/ICU4CGlue.h"
@@ -45,6 +46,11 @@ namespace mozilla::intl {
  */
 class TimeZone final {
  public:
+  static void* operator new(size_t aSize) { return moz_xmalloc(aSize); }
+  static void operator delete(void* aPtr) noexcept {
+    InfallibleAllocPolicy().free_(aPtr);
+  }
+
 #if MOZ_INTL_USE_ICU_CPP_TIMEZONE
   explicit TimeZone(UniquePtr<icu::TimeZone> aTimeZone)
       : mTimeZone(std::move(aTimeZone)) {

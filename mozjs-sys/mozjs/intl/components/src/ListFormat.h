@@ -4,6 +4,7 @@
 #ifndef intl_components_ListFormat_h_
 #define intl_components_ListFormat_h_
 
+#include "mozilla/mozalloc.h"
 #include "mozilla/CheckedInt.h"
 #include "mozilla/intl/ICU4CGlue.h"
 #include "mozilla/Try.h"
@@ -24,6 +25,11 @@ static constexpr size_t DEFAULT_LIST_LENGTH = 8;
  */
 class ListFormat final {
  public:
+  static void* operator new(size_t aSize) { return moz_xmalloc(aSize); }
+  static void operator delete(void* aPtr) noexcept {
+    InfallibleAllocPolicy().free_(aPtr);
+  }
+
   /**
    * The [[Type]] and [[Style]] properties of ListFormat instances.
    *

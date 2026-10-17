@@ -8,6 +8,7 @@
 #include <string_view>
 #include <utility>
 
+#include "mozilla/mozalloc.h"
 #include "mozilla/intl/ICUError.h"
 #include "mozilla/intl/NumberFormat.h"
 #include "mozilla/intl/NumberRangeFormat.h"
@@ -22,6 +23,11 @@ namespace mozilla::intl {
 
 class PluralRules final {
  public:
+  static void* operator new(size_t aSize) { return moz_xmalloc(aSize); }
+  static void operator delete(void* aPtr) noexcept {
+    InfallibleAllocPolicy().free_(aPtr);
+  }
+
   /**
    * The set of keywords that a PluralRules object uses.
    *

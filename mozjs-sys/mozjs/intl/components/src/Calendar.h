@@ -4,6 +4,7 @@
 #ifndef intl_components_Calendar_h_
 #define intl_components_Calendar_h_
 
+#include "mozilla/mozalloc.h"
 #include "mozilla/Assertions.h"
 #include "mozilla/EnumSet.h"
 #include "mozilla/intl/ICU4CGlue.h"
@@ -38,6 +39,11 @@ enum class Weekday : uint8_t {
  */
 class Calendar final {
  public:
+  static void* operator new(size_t aSize) { return moz_xmalloc(aSize); }
+  static void operator delete(void* aPtr) noexcept {
+    InfallibleAllocPolicy().free_(aPtr);
+  }
+
   explicit Calendar(UCalendar* aCalendar) : mCalendar(aCalendar) {
     MOZ_ASSERT(aCalendar);
   };

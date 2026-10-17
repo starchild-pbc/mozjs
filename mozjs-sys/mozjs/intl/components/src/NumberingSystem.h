@@ -5,6 +5,7 @@
 #ifndef intl_components_NumberingSystem_h_
 #define intl_components_NumberingSystem_h_
 
+#include "mozilla/mozalloc.h"
 #include "mozilla/intl/ICUError.h"
 #include "mozilla/Result.h"
 #include "mozilla/Span.h"
@@ -21,6 +22,11 @@ namespace mozilla::intl {
  */
 class NumberingSystem final {
  public:
+  static void* operator new(size_t aSize) { return moz_xmalloc(aSize); }
+  static void operator delete(void* aPtr) noexcept {
+    InfallibleAllocPolicy().free_(aPtr);
+  }
+
   explicit NumberingSystem(UNumberingSystem* aNumberingSystem)
       : mNumberingSystem(aNumberingSystem) {
     MOZ_ASSERT(aNumberingSystem);

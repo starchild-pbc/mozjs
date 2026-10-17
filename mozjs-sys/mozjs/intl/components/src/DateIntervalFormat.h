@@ -4,6 +4,7 @@
 #ifndef intl_components_DateIntervalFormat_h_
 #define intl_components_DateIntervalFormat_h_
 
+#include "mozilla/mozalloc.h"
 #include "mozilla/intl/Calendar.h"
 #include "mozilla/intl/DateTimePart.h"
 #include "mozilla/intl/ICU4CGlue.h"
@@ -33,6 +34,11 @@ using AutoFormattedDateInterval =
  */
 class DateIntervalFormat final {
  public:
+  static void* operator new(size_t aSize) { return moz_xmalloc(aSize); }
+  static void operator delete(void* aPtr) noexcept {
+    InfallibleAllocPolicy().free_(aPtr);
+  }
+
   /**
    * Create a DateIntervalFormat object from locale, skeleton and time zone.
    * The format of skeleton can be found in [1].

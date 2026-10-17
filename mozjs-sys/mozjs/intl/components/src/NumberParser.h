@@ -4,6 +4,7 @@
 #ifndef intl_components_NumberParser_h_
 #define intl_components_NumberParser_h_
 
+#include "mozilla/mozalloc.h"
 #include "mozilla/intl/ICUError.h"
 #include "mozilla/intl/ICU4CGlue.h"
 #include "mozilla/Span.h"
@@ -15,6 +16,11 @@ namespace mozilla::intl {
 
 class NumberParser {
  public:
+  static void* operator new(size_t aSize) { return moz_xmalloc(aSize); }
+  static void operator delete(void* aPtr) noexcept {
+    InfallibleAllocPolicy().free_(aPtr);
+  }
+
   /**
    * Initialize a new NumberParser for the provided locale and using the
    * provided options.

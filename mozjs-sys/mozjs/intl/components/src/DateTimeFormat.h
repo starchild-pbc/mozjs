@@ -5,6 +5,7 @@
 #define intl_components_DateTimeFormat_h_
 #include "unicode/udat.h"
 
+#include "mozilla/mozalloc.h"
 #include "mozilla/intl/ICU4CGlue.h"
 #include "mozilla/intl/ICUError.h"
 #include "mozilla/intl/Locale.h"
@@ -139,6 +140,11 @@ class Calendar;
  */
 class DateTimeFormat final {
  public:
+  static void* operator new(size_t aSize) { return moz_xmalloc(aSize); }
+  static void operator delete(void* aPtr) noexcept {
+    InfallibleAllocPolicy().free_(aPtr);
+  }
+
   /**
    * The hour cycle for components.
    */

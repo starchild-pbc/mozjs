@@ -10,6 +10,7 @@
 #include "unicode/uldnames.h"
 #include "unicode/uloc.h"
 #include "unicode/ucurr.h"
+#include "mozilla/mozalloc.h"
 #include "mozilla/intl/Calendar.h"
 #include "mozilla/intl/DateTimePatternGenerator.h"
 #include "mozilla/intl/ICU4CGlue.h"
@@ -130,6 +131,11 @@ enum class DateTimeField : uint8_t {
  */
 class DisplayNames final {
  public:
+  static void* operator new(size_t aSize) { return moz_xmalloc(aSize); }
+  static void operator delete(void* aPtr) noexcept {
+    InfallibleAllocPolicy().free_(aPtr);
+  }
+
   /**
    * The style of the display name, specified by the amount of space available
    * for displaying the text.

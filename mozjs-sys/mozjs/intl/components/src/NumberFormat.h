@@ -7,6 +7,7 @@
 #include <tuple>
 #include <utility>
 
+#include "mozilla/mozalloc.h"
 #include "mozilla/intl/ICU4CGlue.h"
 #include "mozilla/Maybe.h"
 #include "mozilla/PodOperations.h"
@@ -207,6 +208,11 @@ struct MOZ_STACK_CLASS NumberFormatOptions {
  */
 class NumberFormat final {
  public:
+  static void* operator new(size_t aSize) { return moz_xmalloc(aSize); }
+  static void operator delete(void* aPtr) noexcept {
+    InfallibleAllocPolicy().free_(aPtr);
+  }
+
   /**
    * Initialize a new NumberFormat for the provided locale and using the
    * provided options.

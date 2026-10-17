@@ -4,6 +4,7 @@
 #ifndef intl_components_NumberRangeFormat_h_
 #define intl_components_NumberRangeFormat_h_
 
+#include "mozilla/mozalloc.h"
 #include "mozilla/FloatingPoint.h"
 #include "mozilla/intl/ICUError.h"
 #include "mozilla/intl/NumberFormat.h"
@@ -87,6 +88,11 @@ struct MOZ_STACK_CLASS NumberRangeFormatOptions : public NumberFormatOptions {
  */
 class NumberRangeFormat final {
  public:
+  static void* operator new(size_t aSize) { return moz_xmalloc(aSize); }
+  static void operator delete(void* aPtr) noexcept {
+    InfallibleAllocPolicy().free_(aPtr);
+  }
+
   /**
    * Initialize a new NumberRangeFormat for the provided locale and using the
    * provided options.

@@ -4,6 +4,7 @@
 #ifndef intl_components_RelativeTimeFormat_h_
 #define intl_components_RelativeTimeFormat_h_
 
+#include "mozilla/mozalloc.h"
 #include "mozilla/Try.h"
 #include "mozilla/intl/ICU4CGlue.h"
 #include "mozilla/intl/ICUError.h"
@@ -40,6 +41,11 @@ struct RelativeTimeFormatOptions {
  */
 class RelativeTimeFormat final {
  public:
+  static void* operator new(size_t aSize) { return moz_xmalloc(aSize); }
+  static void operator delete(void* aPtr) noexcept {
+    InfallibleAllocPolicy().free_(aPtr);
+  }
+
   /**
    *
    * Initialize a new RelativeTimeFormat for the provided locale and using the
